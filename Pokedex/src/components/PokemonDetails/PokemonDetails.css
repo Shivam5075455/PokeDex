@@ -32,6 +32,25 @@
     margin-left: 1rem;;
 }
 
+.pokemon-details-type{
+    margin-bottom: 1rem;
+}
+
 .pokemon-details-type > h1{
     display: inline;
+    
+}
+
+.similar-pokemons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+}
+
+.pokemon-similar-boxes{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
 }
