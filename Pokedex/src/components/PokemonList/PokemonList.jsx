@@ -1,75 +1,50 @@
-import axios from 'axios';
-import './PokemonList.css';
-import { useEffect, useState } from 'react';
-import Pokemon from '../Pokemon/Pokemon';
+import "./PokemonList.css";
+import Pokemon from "../Pokemon/Pokemon";
+import usePokemonList from "../../hooks/usePokemonList";
 function PokemonList() {
+  const [pokemonListState, setPokemonListState] = usePokemonList();
 
-
-    const DEFAULT_POKEDEX_API_URL = 'https://pokeapi.co/api/v2/pokemon';
-    // const [pokemonList, setPokemonList] = useState([]);
-    // const [pokedexUrl, setPokedexUrl] = useState(DEFAULT_POKEDEX_API_URL);
-    // const [nextUrl, setNextUrl] = useState(DEFAULT_POKEDEX_API_URL);
-    // const [prevUrl, setPrevUrl] = useState(DEFAULT_POKEDEX_API_URL);
-
-
-    const [pokemonListState, setPokemonListState] = useState({
-        pokemonList: [],
-        pokedexUrl: DEFAULT_POKEDEX_API_URL,
-        nextUrl: DEFAULT_POKEDEX_API_URL,
-        prevUrl: DEFAULT_POKEDEX_API_URL
-
-
-    });
-    async function downloadPokemons() {
-        const response = await axios.get(pokemonListState.pokedexUrl ? pokemonListState.pokedexUrl : DEFAULT_POKEDEX_API_URL);
-        const pokemonResults = response.data.results;
-
-        // setNextUrl(response.data.next);
-        // setPrevUrl(response.data.prevUrl);
-
-        // setPokemonListState((state) => ({...state, nextUrl: response.data.next, prevUrl: response.data.previous}))
-
-        const pokemonPromise = pokemonResults.map(pokemon => axios.get(pokemon.url))
-
-        const pokemonListData = await axios.all(pokemonPromise)
-
-        const pokemonFinalList = pokemonListData.map(pokemonData => {
-            const pokemon = pokemonData.data;
-            return {
-                id: pokemon.id,
-                name: pokemon.name,
-                image: pokemon.sprites.other.dream_world.front_default,
-                type: pokemon.types
+  return (
+    <>
+      <div className="pokemon-list-wrapper">
+        <div id="pokemon-list-header">
+          <h1>Pokemon List</h1>
+        </div>
+        <div className="page-controls">
+          <button
+            onClick={() =>
+              setPokemonListState({
+                ...pokemonListState,
+                pokedexUrl: pokemonListState.prevUrl,
+              })
             }
-        });
-
-        // setPokemonList(pokemonFinalList);
-        setPokemonListState({...pokemonListState, pokemonList:pokemonFinalList, nextUrl: response.data.next, prevUrl: response.data.previous})
-
-        console.log(pokemonFinalList);
-    }
-    useEffect(() => {
-        downloadPokemons()
-
-    }, [pokemonListState.pokedexUrl]);
-
-    return (
-        <>
-            <div className='pokemon-list-wrapper'>
-                <div id='pokemon-list-header'>
-                    <h1>Pokemon List</h1>
-                </div>
-                <div className="page-controls">
-                    <button onClick={() => setPokemonListState({...pokemonListState, pokedexUrl: pokemonListState.prevUrl})}>Prev</button>
-                    <button onClick={() => setPokemonListState({...pokemonListState, pokedexUrl: pokemonListState.nextUrl})}>Next</button>
-                    </div>
-                <div className="pokemon-list">
-                    {pokemonListState.pokemonList.map((pokemon) => <Pokemon name={pokemon.name} key={pokemon.id} url={pokemon.image} id={pokemon.id}/>)}
-                </div>
-
-            </div>
-        </>
-    )
+          >
+            Prev
+          </button>
+          <button
+            onClick={() =>
+              setPokemonListState({
+                ...pokemonListState,
+                pokedexUrl: pokemonListState.nextUrl,
+              })
+            }
+          >
+            Next
+          </button>
+        </div>
+        <div className="pokemon-list">
+          {pokemonListState.pokemonList.map((pokemon) => (
+            <Pokemon
+              name={pokemon.name}
+              key={pokemon.id}
+              url={pokemon.image}
+              id={pokemon.id}
+            />
+          ))}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default PokemonList;
