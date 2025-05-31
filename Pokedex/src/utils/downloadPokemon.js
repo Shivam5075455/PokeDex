@@ -18,7 +18,6 @@ import axios from "axios";
         })
 
         const pokemonListData = await axios.all(pokemonPromise)
-        console.log(pokemonListData);
 
         const pokemonFinalList = pokemonListData.map(pokemonData => {
             const pokemon = pokemonData.data;
